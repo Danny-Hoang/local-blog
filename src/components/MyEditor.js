@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Draft from "draft-js";
-
+import axios from 'axios';
 import 'draft-js/dist/Draft.css';
 import './rich.css'
 
@@ -143,7 +143,42 @@ function MyEditor() {
         );
     }
 
+    const handleBeforeInput = (e, data) => {
+        console.log(e)
+    }
+    const handlePlastedText = (e, data) => {
+        console.log(e)
+    }
 
+    const [value, setValue] = useState('');
+    const handlePaste = (e, data) => {
+        console.log(e)
+        const htmlData = e.clipboardData.getData('text/html');
+        htmlData.replace(/\<body\>/,'');
+        htmlData.replace(/\<\/body\>/,'');
+        htmlData.replace(/\<html\>/,'');
+        htmlData.replace(/\<\/html\>/,'');
+        setValue(htmlData);
+    }
+    const handlePastedfiles = (e) => {
+        console.log(e)
+    }
+
+    const save = () => {
+        axios.post('/article', {
+            content: value
+          })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+    }
+
+    function createMarkup(v) {
+        return {__html: v};
+      }
 
     const editorRef = React.useRef(null);
 
@@ -161,18 +196,28 @@ function MyEditor() {
                 editorState={editorState}
                 onToggle={toggleInlineStyle}
             />
+            <button onClick={save}>Save</button>
             <div className={className} onClick={focus}>
+                <textarea 
+                    value={value}
+                    onPaste={handlePaste}
+                />
 
-                <Editor
+                <div style={{ margin: '0 auto', width: '50vw'}} dangerouslySetInnerHTML={createMarkup(value)}></div>
+
+                {/* <Editor
                     blockStyleFn={getBlockStyle}
                     customStyleMap={styleMap}
                     editorState={editorState}
                     handleKeyCommand={handleKeyCommand}
                     keyBindingFn={mapKeyToEditorCommand}
+                    handleBeforeInput={handleBeforeInput}
                     editorState={editorState} 
+                    handlePastedFiles={handlePastedfiles}
                     onChange={setEditorState} 
+                    handlePastedText={handlePlastedText}
                     ref={editorRef}
-                />;
+                />; */}
             </div>
         </div>
     )

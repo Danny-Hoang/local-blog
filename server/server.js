@@ -7,4 +7,11 @@ app.get('*', (req, res) =>
     res.sendFile(path.join(__dirname, '../build/index.html'))
 );
 
+app.post('/article', (request, response) => {
+    response.send({
+        message: 'Node.js and Express REST API'}
+    );
+});
+ 
+
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
