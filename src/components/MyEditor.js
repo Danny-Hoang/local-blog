@@ -144,36 +144,37 @@ function MyEditor() {
     }
 
     const handleBeforeInput = (e, data) => {
-        console.log(e)
     }
     const handlePlastedText = (e, data) => {
-        console.log(e)
     }
 
     const [value, setValue] = useState('');
     const handlePaste = (e, data) => {
-        console.log(e)
         const htmlData = e.clipboardData.getData('text/html');
         htmlData.replace(/\<body\>/,'');
         htmlData.replace(/\<\/body\>/,'');
         htmlData.replace(/\<html\>/,'');
         htmlData.replace(/\<\/html\>/,'');
-        setValue(htmlData);
+        // setValue(htmlData);
+
+        axios.post('/article', {
+            content: htmlData
+          })
+          .then(function (response) {
+            const newValue = response.data.html;
+            console.log(newValue);
+            setValue(newValue);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
     }
     const handlePastedfiles = (e) => {
         console.log(e)
     }
 
     const save = () => {
-        axios.post('/article', {
-            content: value
-          })
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        
     }
 
     function createMarkup(v) {
