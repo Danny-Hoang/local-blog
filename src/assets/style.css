@@ -1,0 +1,82 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-Black.ttf') format('ttf'),
+         url('fonts/Roboto-BlackItalic.ttf') format('ttf'),
+         url('fonts/Roboto-Bold.ttf') format('ttf'),
+         url('fonts/Roboto-BoldItalic.ttf') format('ttf'),
+         url('fonts/Roboto-Light.ttf') format('ttf'),
+         url('fonts/Roboto-LightItalic.ttf') format('ttf'),
+         url('fonts/Roboto-Medium.ttf') format('ttf'),
+         url('fonts/Roboto-MediumItalic.ttf') format('ttf'),
+         url('fonts/Roboto-Regular.ttf') format('ttf'),
+         url('fonts/Roboto-Thin.ttf') format('ttf'),
+         url('fonts/Roboto-ThinItalic.ttf') format('ttf')
+}
+
+@import './variables.scss';
+@import './utilities.scss';
+@import './typo.css';
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto
+}
+
+@media (min-width: 576px) {
+    .container {
+        max-width:540px
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width:720px
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width:960px
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width:1140px
+    }
+}
+
+.container-fluid,.container-lg,.container-md,.container-sm,.container-xl {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto
+}
+
+@media (min-width: 576px) {
+    .container,.container-sm {
+        max-width:540px
+    }
+}
+
+@media (min-width: 768px) {
+    .container,.container-md,.container-sm {
+        max-width:720px
+    }
+}
+
+@media (min-width: 992px) {
+    .container,.container-lg,.container-md,.container-sm {
+        max-width:960px
+    }
+}
+
+@media (min-width: 1200px) {
+    .container,.container-lg,.container-md,.container-sm,.container-xl {
+        max-width:1140px
+    }
+}

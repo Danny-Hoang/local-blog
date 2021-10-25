@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Draft from "draft-js";
-import axios from 'axios';
+
 import 'draft-js/dist/Draft.css';
 import './rich.css'
+import { List, Map, Repeat } from 'immutable';
+import MyCustomBlock from './MyCustomBlock';
 
-const { Editor, EditorState, RichUtils, getDefaultKeyBinding } = Draft;
+const { Editor, EditorState, RichUtils, genKey, getDefaultKeyBinding, ContentBlock } = Draft;
 // Custom overrides for "code" style.
 const styleMap = {
     CODE: {
@@ -144,42 +146,95 @@ function MyEditor() {
     }
 
     const handleBeforeInput = (e, data) => {
+        // debugger;
+    }
+    const onPaste = (e, data) => {
+        // debugger;
     }
     const handlePlastedText = (e, data) => {
     }
 
-    const [value, setValue] = useState('');
-    const handlePaste = (e, data) => {
-        const htmlData = e.clipboardData.getData('text/html');
-        htmlData.replace(/\<body\>/,'');
-        htmlData.replace(/\<\/body\>/,'');
-        htmlData.replace(/\<html\>/,'');
-        htmlData.replace(/\<\/html\>/,'');
-        // setValue(htmlData);
 
-        axios.post('/article', {
-            content: htmlData
-          })
-          .then(function (response) {
-            const newValue = response.data.html;
-            console.log(newValue);
-            setValue(newValue);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-    }
     const handlePastedfiles = (e) => {
         console.log(e)
     }
 
     const save = () => {
-        
+
     }
 
-    function createMarkup(v) {
-        return {__html: v};
-      }
+    console.log('rerender')
+
+
+    const addNewBlockAt = (
+        editorState,
+        pivotBlockKey,
+        newBlockType = 'unstyled',
+        initialData = new Map({})
+    ) => {
+        const content = editorState.getCurrentContent();
+        const blockMap = content.getBlockMap();
+        const block = blockMap.get(pivotBlockKey);
+
+        if (!block) {
+            throw new Error(`The pivot key - ${pivotBlockKey} is not present in blockMap.`);
+        }
+
+        const blocksBefore = blockMap.toSeq().takeUntil((v) => (v === block));
+        const blocksAfter = blockMap.toSeq().skipUntil((v) => (v === block)).rest();
+        const newBlockKey = genKey();
+
+        const newBlock = new ContentBlock({
+            key: newBlockKey,
+            type: newBlockType,
+            text: '',
+            characterList: new List(),
+            depth: 0,
+            data: initialData,
+        });
+
+        const newBlockMap = blocksBefore.concat(
+            [[pivotBlockKey, block], [newBlockKey, newBlock]],
+            blocksAfter
+        ).toOrderedMap();
+
+        const selection = editorState.getSelection();
+
+        const newContent = content.merge({
+            blockMap: newBlockMap,
+            selectionBefore: selection,
+            selectionAfter: selection.merge({
+                anchorKey: newBlockKey,
+                anchorOffset: 0,
+                focusKey: newBlockKey,
+                focusOffset: 0,
+                isBackward: false,
+            }),
+        });
+
+        return EditorState.push(editorState, newContent, 'split-block');
+    };
+
+    const onAddCustomBlock = () => {
+        const selection = editorState.getSelection();
+
+        setEditorState(addNewBlockAt(
+            editorState,
+            selection.getAnchorKey(),
+            'MyCustomBlock'
+        ))
+    }
+    const blockRenderMap = new Map({
+        'MyCustomBlock': {
+            // element is used during paste or html conversion to auto match your component;
+            // it is also retained as part of this.props.children and not stripped out
+            element: 'section',
+            wrapper: <MyCustomBlock />,
+        }
+    });
+    // keep support for other draft default block types and add our myCustomBlock type
+    const extendedBlockRenderMap = Draft.DefaultDraftBlockRenderMap.merge(blockRenderMap);
+
 
     const editorRef = React.useRef(null);
 
@@ -189,7 +244,7 @@ function MyEditor() {
     let className = "RichEditor-editor";
     return (
         <div className="RichEditor-root">
-            <BlockStyleControls
+            {/* <BlockStyleControls
                 editorState={editorState}
                 onToggle={toggleBlockType}
             />
@@ -197,28 +252,30 @@ function MyEditor() {
                 editorState={editorState}
                 onToggle={toggleInlineStyle}
             />
-            <button onClick={save}>Save</button>
+            <button onClick={onAddCustomBlock}>Add custom block</button> */}
             <div className={className} onClick={focus}>
-                <textarea 
+                {/* <textarea 
                     value={value}
                     onPaste={handlePaste}
                 />
 
-                <div style={{ margin: '0 auto', width: '50vw'}} dangerouslySetInnerHTML={createMarkup(value)}></div>
+                <div style={{ margin: '0 auto', width: '50vw'}} dangerouslySetInnerHTML={createMarkup(value)}></div> */}
 
-                {/* <Editor
-                    blockStyleFn={getBlockStyle}
+                <Editor
+                    // blockStyleFn={getBlockStyle}
                     customStyleMap={styleMap}
                     editorState={editorState}
                     handleKeyCommand={handleKeyCommand}
                     keyBindingFn={mapKeyToEditorCommand}
+                    onPaste={onPaste}
+                    blockRenderMap={extendedBlockRenderMap}
                     handleBeforeInput={handleBeforeInput}
-                    editorState={editorState} 
+                    editorState={editorState}
                     handlePastedFiles={handlePastedfiles}
-                    onChange={setEditorState} 
+                    onChange={setEditorState}
                     handlePastedText={handlePlastedText}
                     ref={editorRef}
-                />; */}
+                />
             </div>
         </div>
     )
