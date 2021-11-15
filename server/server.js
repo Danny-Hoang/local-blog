@@ -1,53 +1,60 @@
 const jsdom = require("jsdom");
 const express = require('express')
+var CSON = require('cson')
+const pretty = require('pretty');
 const path = require('path');
 const bodyParser = require('body-parser')
-const request = require('request');
-const app = express()
-const fs = require('fs');
+const {  setupApi } = require('./api');
+const app = express();
+const { LOCAL_BLOG_DIR, getArticleSync, deleteArticle, getAllTags, getAllCategories, getArticlesByTag, getArticlesByCategory, getAllSnippets, getSnippet } = require('./fsUtil'); 
+
 const port = 5555;
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit:50000 }))
+app.use(bodyParser.json({limit: '50mb'}))
 app.use(express.static(path.join(__dirname, '../build')));
-
-const { v4: uuidv4 } = require('uuid');
-
-const generateFileName = () => uuidv4() + '.png';
+app.use(express.static(path.join(LOCAL_BLOG_DIR + '/images')));
 
 
-const { JSDOM } = jsdom;
+const { downloadFile, getListArticles, saveFileSync } = require('./fsUtil');
 
-var download = function (uri, filename, callback) {
-    request.head(uri, function (err, res, body) {
-
-        request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-    });
-};
-
-app.get('*', (req, res) =>
+app.get('/', (req, res) =>
     res.sendFile(path.join(__dirname, '../build/index.html'))
 );
 
-app.post('/article', (request, response) => {
+setupApi(app);
+app.post('/saveChanges', (request, response) => {
     const content = request.body.content;
-    const dom = new JSDOM(content);
-    
-    const imgList = dom.window.document.querySelectorAll("img")
-    for (let img of imgList) {
-        const fileName = generateFileName();
-        const src = img.src;
-        img.src = 'static/media/' + fileName;
-        download(src, path.join(__dirname, '../build/static/media/') + fileName, () => {
-        })
+    const fileName = request.body.fileName;
+    saveArticle(fileName, content )
+})
 
-    }
-    console.log(dom.window.document.documentElement.innerHTML)
+app.post('/list', (request, response) => {
+    const articles = getListArticles();
     response.send({
-        message: 'Node.js and Express REST API',
-        html: dom.window.document.documentElement.innerHTML
+        articles
+    });
+})
+app.post('/article', (request, response) => {
+    const id = request.body.id;
+    const article = getArticleSync(id);
+    response.send({
+        article
+    });
+})
+app.post('/deleteArticle', (request, response) => {
+    const id = request.body.id;
+    if(id) {
+        deleteArticle(id)
+        response.send({
+            message: 'successfully delete'
+        });
+    } else {
+        response.send({
+            message: 'article id is not specify'
+        });
     }
-    );
-});
+})
+
 
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))

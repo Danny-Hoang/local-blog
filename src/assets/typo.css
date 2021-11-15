@@ -1,0 +1,184 @@
+/*text styles*/
+
+.h1 {
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 28px;
+}
+.h2 {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 23px;
+}
+.h3 {
+    font-size: 20px !important;
+    font-weight: normal !important;
+    line-height: 19px !important;
+}
+.h4 {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    line-height: 19px !important;
+}
+.h5 {
+    font-size: 16px !important;
+    font-weight: normal;
+    line-height: 19px !important;
+}
+.h6 {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 16px !important;
+}
+.h7 {
+    font-size: 14px !important;
+    font-weight: normal !important;
+    line-height: 16px !important;
+}
+.h8 {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    line-height: 14px !important;
+}
+.h9 {
+    font-size: 12px !important;
+    font-weight: normal !important;
+    line-height: 14px !important;
+}
+.h10 {
+    font-size: 10px !important;
+    font-weight: 500 !important;
+    line-height: 12px !important;
+}
+.h11 {
+    font-size: 10px;
+    font-weight: normal;
+    line-height: 12px;
+}
+
+.phaph {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.text-transf-upper {
+    text-transform: uppercase;
+}
+
+.text-link {
+    color: var(--link) !important;
+}
+
+.text-red-4 {
+    color: var(--red-4) !important;
+}
+
+.text-primary-50 {
+    color: var(--primary-50) !important;
+}
+
+.text-primary-50-fixed {
+    color: var(--primary-50-fixed) !important;
+}
+
+.text-primary-70 {
+    color: var(--primary-70) !important;
+}
+.text-primary-5 {
+    color: var(--primary-5) !important;
+}
+
+.text-b500 {
+    color: var(--blue-5) !important;
+}
+
+.text-g500,
+.text-success {
+    color: var(--green-4) !important;
+}
+
+.text-r500,
+.text-error {
+    color: var(--red-4) !important;
+}
+
+/*text colors palette*/
+.text-primary {
+    color: var(--color-text-primary);
+}
+.text-gray-10 {
+    color: var(--gray-10) !important;
+}
+
+.text-gray-8 {
+    color: var(--gray-8) !important;
+}
+.text-gray-7 {
+    color: var(--gray-7) !important;
+}
+
+.text-gray-6 {
+    color: var(--gray-6) !important;
+}
+
+.text-white {
+    color: #fff;
+}
+
+.bg-15 {
+    background: var(--bg-15);
+}
+.bg-2 {
+    background: var(--bg-2);
+}
+.bg-4 {
+    background: var(--bg-4);
+}
+.bg-10 {
+    background: var(--bg-10);
+}
+.bg-20 {
+    background: var(--bg-20);
+}
+
+.bg-primary-5 {
+    background: var(--primary-5);
+}
+
+.bg-primary-30 {
+    background: var(--primary-30);
+}
+
+.g500 {
+    background-color: var(--green-4);
+}
+.b500 {
+    background-color: var(--blue-5);
+}
+.y500 {
+    background-color: var(--orange-5);
+}
+.t500 {
+    background-color: var(--cyan-4);
+}
+.r500 {
+    background-color: var(--red-4);
+}
+.p500 {
+    background-color: var(--purple-5);
+}
+.r1 {
+    background-color: var(--red-1);
+}
+
+.is-not-allowed {
+    cursor: not-allowed;
+}
+
+.is-pointer {
+    &:hover {
+        cursor: pointer;
+    }
+}
